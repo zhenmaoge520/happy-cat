@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Happy Cat 摸摸猫 —— 一只放在浏览器里的小猫，随时可以摸一摸。开源、免安装、纯前端。" />
+  <title>Happy Cat · 摸摸猫 🐱</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="stage">
+    <!-- 顶部标题栏 -->
+    <header class="topbar">
+      <h1 class="title">Happy Cat <span class="subtitle">摸摸猫</span></h1>
+      <div class="topbar-actions">
+        <button id="sound-btn" class="icon-btn" title="音效开关" aria-label="音效开关">🔊</button>
+        <a class="github-link" href="https://github.com/zhenmaoge520/happy-cat" target="_blank" rel="noopener" title="去 GitHub 点个 Star">
+          <svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor" aria-hidden="true">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/>
+          </svg>
+          <span class="star-hint">Star ⭐</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- 状态栏 -->
+    <section class="stats" aria-label="小猫状态">
+      <div class="stat">
+        <span class="stat-icon">💗</span>
+        <div class="stat-body">
+          <span class="stat-label">心情</span>
+          <div class="bar"><div class="bar-fill" id="bar-mood"></div></div>
+        </div>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">🐟</span>
+        <div class="stat-body">
+          <span class="stat-label">饱食</span>
+          <div class="bar"><div class="bar-fill" id="bar-hunger"></div></div>
+        </div>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">⚡</span>
+        <div class="stat-body">
+          <span class="stat-label">能量</span>
+          <div class="bar"><div class="bar-fill" id="bar-energy"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 舞台：小猫在这里 -->
+    <section id="cat-area" class="cat-area">
+      <div id="speech" class="speech hidden"></div>
+      <div id="cat-wrap" class="cat-wrap">
+        <svg id="cat" class="cat" viewBox="0 0 400 400" role="img" aria-label="一只可以摸的小猫">
+          <!-- 尾巴 -->
+          <path id="tail" class="tail" d="M300 300 C 370 290, 385 220, 350 185" fill="none" stroke="#f5a65b" stroke-width="26" stroke-linecap="round"/>
+          <!-- 身体 -->
+          <ellipse cx="200" cy="300" rx="105" ry="82" fill="#f5a65b"/>
+          <ellipse cx="200" cy="318" rx="62" ry="52" fill="#ffe3c2"/>
+          <!-- 前爪 -->
+          <ellipse cx="160" cy="368" rx="26" ry="14" fill="#ffd9ae"/>
+          <ellipse cx="240" cy="368" rx="26" ry="14" fill="#ffd9ae"/>
+          <!-- 耳朵 -->
+          <polygon points="118,120 132,52 176,98" fill="#f5a65b"/>
+          <polygon points="131,110 138,72 163,99" fill="#ff8fa3"/>
+          <polygon points="282,120 268,52 224,98" fill="#f5a65b"/>
+          <polygon points="269,110 262,72 237,99" fill="#ff8fa3"/>
+          <!-- 头 -->
+          <circle cx="200" cy="160" r="95" fill="#f5a65b"/>
+          <!-- 条纹 -->
+          <path d="M150 80 q 12 22 0 40" stroke="#e08b3e" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <path d="M200 68 q 10 26 0 48" stroke="#e08b3e" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <path d="M250 80 q -12 22 0 40" stroke="#e08b3e" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <!-- 腮红 -->
+          <ellipse id="blush-l" class="blush" cx="138" cy="192" rx="20" ry="11" fill="#ff9db0" opacity="0"/>
+          <ellipse id="blush-r" class="blush" cx="262" cy="192" rx="20" ry="11" fill="#ff9db0" opacity="0"/>
+          <!-- 睁开的眼睛 -->
+          <g id="eyes-open">
+            <circle cx="162" cy="158" r="14" fill="#3a2b20"/>
+            <circle cx="163" cy="153" r="4.5" fill="#fff"/>
+            <circle cx="238" cy="158" r="14" fill="#3a2b20"/>
+            <circle cx="239" cy="153" r="4.5" fill="#fff"/>
+          </g>
+          <!-- 开心眯眯眼 -->
+          <g id="eyes-happy" class="hidden-eyes" stroke="#3a2b20" stroke-width="7" fill="none" stroke-linecap="round">
+            <path d="M148 160 q 14 -14 28 0"/>
+            <path d="M224 160 q 14 -14 28 0"/>
+          </g>
+          <!-- 睡觉的眼 -->
+          <g id="eyes-sleepy" class="hidden-eyes" stroke="#3a2b20" stroke-width="7" fill="none" stroke-linecap="round">
+            <path d="M148 158 q 14 12 28 0"/>
+            <path d="M224 158 q 14 12 28 0"/>
+          </g>
+          <!-- 鼻子和嘴 -->
+          <polygon points="200,182 193,174 207,174" fill="#ff8fa3"/>
+          <path id="mouth" d="M200 182 q -2 12 -12 12 M200 182 q 2 12 12 12" stroke="#3a2b20" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <!-- 胡须 -->
+          <g stroke="#8a5a2b" stroke-width="3.5" stroke-linecap="round">
+            <path d="M120 176 q -35 -8 -55 -18"/>
+            <path d="M120 190 q -36 2 -58 2"/>
+            <path d="M280 176 q 35 -8 55 -18"/>
+            <path d="M280 190 q 36 2 58 2"/>
+          </g>
+        </svg>
+        <!-- 摸摸区域提示 -->
+        <div class="pet-hint">👆 点我 / 拖动来摸我</div>
+      </div>
+      <!-- 粒子（爱心/鱼刺/Zzz）都挂在这里 -->
+      <div id="particles" class="particles"></div>
+      <!-- 玩耍用的小毛线球 -->
+      <div id="yarn" class="yarn hidden">🧶</div>
+    </section>
+
+    <!-- 交互按钮 -->
+    <section class="actions">
+      <button id="btn-pet" class="action-btn primary">🖐️ 摸摸</button>
+      <button id="btn-feed" class="action-btn">🐟 喂小鱼干</button>
+      <button id="btn-play" class="action-btn">🧶 一起玩</button>
+      <button id="btn-sleep" class="action-btn">💤 睡觉</button>
+    </section>
+
+    <!-- 成就栏 -->
+    <section class="achievements">
+      <h2 class="ach-title">🏅 成就 <span id="ach-count"></span></h2>
+      <div id="ach-list" class="ach-list"></div>
+    </section>
+
+    <footer class="foot">
+      <p>养猫无需铲屎 · 数据保存在你的浏览器里 ·
+        <a href="https://github.com/zhenmaoge520/happy-cat" target="_blank" rel="noopener">GitHub 开源</a>
+      </p>
+    </footer>
+  </main>
+
+  <!-- 成就解锁 Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
